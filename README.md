@@ -1,2 +1,6 @@
 # github_searcher
-Native android application for searching users and repositories by their names
+Functionality:
+    Native android application for searching and viewing users and repositories by their names.
+
+The technology stack used:
+    Clean, MVVM, Kotlin, Kotlin Coroutines, Compose, AndroidX navigation, Retrofit, Koin. 
