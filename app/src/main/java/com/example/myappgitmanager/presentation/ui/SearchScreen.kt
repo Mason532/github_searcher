@@ -30,6 +30,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.myappgitmanager.R
 import com.example.myappgitmanager.navigation.action.NavigationEvent
 import com.example.myappgitmanager.navigation.destination.NavigationDestination
@@ -49,7 +50,7 @@ fun SearchScreenRoot(
     val MIN_QUERY_LENGTH = remember { 3 }
 
     val vm = koinViewModel<SearchScreenVM>()
-    val uiState by vm.state.collectAsState()
+    val uiState by vm.state.collectAsStateWithLifecycle()
 
     fun handleQuery(input: String) {
         if (input.length < MIN_QUERY_LENGTH) {

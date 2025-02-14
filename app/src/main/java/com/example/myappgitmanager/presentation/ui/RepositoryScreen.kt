@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.myappgitmanager.R
 import com.example.myappgitmanager.navigation.action.NavigationEvent
 import com.example.myappgitmanager.navigation.args.NavArgs
@@ -65,7 +66,7 @@ fun RepositoryScreenRoot(
     path: String?
 ) {
     val vm = koinViewModel<RepositoryScreenVM>()
-    val uiState by vm.state.collectAsState()
+    val uiState by vm.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         vm.getRepositoryContent(owner = ownerId, repo = repositoryId, path = path ?: "")
@@ -184,7 +185,9 @@ fun RepositoryScreenDataListState(
         initialFirstVisibleItemScrollOffset = firstVisibleItemScrollOffset
     )
 
-    LaunchedEffect(remember { derivedStateOf { listState.firstVisibleItemIndex } }, remember { derivedStateOf { listState.firstVisibleItemScrollOffset } }) {
+    LaunchedEffect(
+        listState
+    ) {
         snapshotFlow {
             listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset
         }

@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -44,7 +43,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myappgitmanager.R
 import com.example.myappgitmanager.navigation.args.NavArgs
@@ -66,19 +64,27 @@ fun MultiTypeList(
     data: List<Any>
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .padding(paddingValues)
             .padding(16.dp)
             .background(MaterialTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        itemsIndexed(data) { _, item ->
+        itemsIndexed(data, key = { _, item ->
+            when (item) {
+                //is Repo -> item.hashCode()
+                is User -> item.id
+                else -> item.hashCode()
+            }
+        }) { _, item ->
             when (item) {
                 is Repo -> Repository(item, onItemClick = onRepositoryClick)
                 is User -> User(item)
             }
         }
     }
+
 }
 
 @Composable

@@ -3,7 +3,10 @@ package com.example.myappgitmanager.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -39,23 +42,20 @@ fun AppNavHost(
     val navController = rememberNavController()
     val vm = koinViewModel<AppNavigationVM>()
 
-    val appNavHostCoroutineScope = rememberCoroutineScope{Dispatchers.Main}
-
+    val lifecycleOwner = LocalLifecycleOwner.current
     LaunchedEffect(Unit) {
-        appNavHostCoroutineScope.launch {
-            vm.navigationEvents.collect {event ->
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            vm.navigationEvents.collect { event ->
                 when (event) {
                     is NavigationEvent.NavigateTo -> navController.navigate(
-                        event.destination.buildRouteWithArgs(
-                            args = event.args
-                        )
+                        event.destination.buildRouteWithArgs(args = event.args)
                     )
                     is NavigationEvent.NavigateBack -> navController.popBackStack()
-                    else -> return@collect
                 }
             }
         }
     }
+
 
     NavHost(
         navController = navController,
